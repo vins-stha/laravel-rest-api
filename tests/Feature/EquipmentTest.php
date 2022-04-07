@@ -13,7 +13,7 @@ class EquipmentTest extends TestCase
     use DatabaseTransactions;
 
 
-     public function test_successful_equipment_create()
+    public function test_successful_equipment_create()
     {
         $user = User::factory()->create();
 
@@ -56,56 +56,55 @@ class EquipmentTest extends TestCase
         )
             ->assertStatus(200)
             ->assertJson([
-                'data'=>[
-                    'id'=>1,
-                    'name'=>'Lorem',
-                    'quantity'=>10,
-                    'internal_notes'=>'Ipsum'
+                'data' => [
+                    'id' => 1,
+                    'name' => 'Lorem',
+                    'quantity' => 10,
+                    'internal_notes' => 'Ipsum'
                 ],
-
             ]);
     }
 
     public function test_successful_update_equipment()
-   {
-       $user = User::factory()->create();
+    {
+        $user = User::factory()->create();
 
-       $this->actingAs($user);
+        $this->actingAs($user);
 
-       $token = JWTAuth::fromUser($user);
+        $token = JWTAuth::fromUser($user);
 
-       $headers = ['Authorization' => "Bearer $token"];
+        $headers = ['Authorization' => "Bearer $token"];
 
-       $equipment = Equipment::factory()->create([
-           "name" => "Lorem",
-           "quantity" => 10,
-           "internal_notes" => "ipsum"
-       ]);
+        $equipment = Equipment::factory()->create([
+            "name" => "Lorem",
+            "quantity" => 10,
+            "internal_notes" => "ipsum"
+        ]);
 
-       $payload = [
-           "name" => "New lorem",
-           "quantity" => 110,
-           "internal_notes" => "New ipsum"
-       ];
+        $payload = [
+            "name" => "New lorem",
+            "quantity" => 110,
+            "internal_notes" => "New ipsum"
+        ];
 
-       $response = $this->json(
-           'PUT',
-           '/api/equipments/' . $equipment->id,
-           $payload,
-           $headers
-       )
-           ->assertStatus(200)
-           ->assertJson([
-               'data'=>[
-                   'id'=>1,
-                   'name'=>'New lorem',
-                   'quantity'=>110,
-                   'internal_notes'=>'New ipsum'
-               ],
-               'status'=>200
+        $response = $this->json(
+            'PUT',
+            '/api/equipments/' . $equipment->id,
+            $payload,
+            $headers
+        )
+            ->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'id' => 1,
+                    'name' => 'New lorem',
+                    'quantity' => 110,
+                    'internal_notes' => 'New ipsum'
+                ],
+                'status' => 200
 
-           ]);
-   }
+            ]);
+    }
 
     public function test_successful_deletion_equipment_by_registered_user()
     {
@@ -130,24 +129,32 @@ class EquipmentTest extends TestCase
         )
             ->assertStatus(200)
             ->assertJson([
-                    'message'=>"Deleted successfully",
+                'message' => "Deleted successfully",
             ]);
     }
 
     public function test_successful_retrieve_by_guest()
     {
-        $equipment = Equipment::factory()->create();
-        $this->json('GET', '/api/find-equipments/')
-            ->assertStatus(200);
-//            ->assertJson([
-//                'data' =>
-//                    ['id' => $equipment->id,
-//                        "name" => $equipment->name,//=> "Lorem",
-//                        'quantity' => $equipment->quantity// => 10,
-//                    ]
-//            ]);
-    }
+        $equipment = Equipment::factory()->create([
+            "name" => "Lorem",
+            "quantity" => 10,
+            "internal_notes" => "Ipsum"
+        ]);
 
+        $response = $this->json(
+            'GET',
+            '/api/find-equipments/' . $equipment->id
+
+        )
+            ->assertStatus(200)
+            ->assertJson([
+                "data" => [
+                    "id" =>  $equipment->id,
+                    "name" => "Lorem",
+                    "quantity" => 10
+                ],
+            ]);
+    }
 
 
 }
