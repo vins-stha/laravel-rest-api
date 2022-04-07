@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,4 +19,5 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
 }

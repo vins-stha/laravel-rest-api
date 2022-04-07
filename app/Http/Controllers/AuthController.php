@@ -10,7 +10,10 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    //
+    /**
+     * AuthController constructor.
+     *
+     */
     public function __construct()
     {
         $this->middleware(
@@ -20,10 +23,13 @@ class AuthController extends Controller
             ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function register(Request $request)
     {
-        var_dump("Hello world");
-
         $validator = Validator::make($request->all(),
             [
                 'name' => 'required',
@@ -52,10 +58,13 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function login(Request $request)
     {
-        var_dump("Login world");
-
         $validator = Validator::make($request->all(),
             [
                 'email' => 'required|email',
@@ -80,6 +89,11 @@ class AuthController extends Controller
     }
 
 
+    /**
+     * @param $token
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function createToken($token){
         return response()->json([
 
@@ -91,6 +105,11 @@ class AuthController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function logout(Request $request)
     {
         auth()->logout();

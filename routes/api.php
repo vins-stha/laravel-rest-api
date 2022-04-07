@@ -31,6 +31,4 @@ Route::group(['middleware'=>'api'],function($router){
     Route::get('/find-equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'guestView']);
     Route::get('/find-equipments/', [\App\Http\Controllers\EquipmentController::class, 'guestView']);
 
-
-
 });

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
-use Facade\FlareClient\Http\Exceptions\NotFound;
-use http\Env\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
 
 class EquipmentController extends Controller
 {
-
+    /**
+     * EquipmentController constructor.
+     *
+     */
     public function __construct()
     {
         $this->middleware(
@@ -22,6 +22,11 @@ class EquipmentController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function index(Request $request)
     {
         $equipments = Equipment::all();
@@ -32,12 +37,18 @@ class EquipmentController extends Controller
         ]);
     }
 
-    public function guestView(Request $request, $id=null)
+    /**
+     * @param Request $request
+     * @param null $id
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function guestView(Request $request, $id = null)
     {
-        if(!$id)
-            $equipments = Equipment::all('id','name','quantity');
+        if (!$id)
+            $equipments = Equipment::all('id', 'name', 'quantity');
         else
-            $equipments = Equipment::all('id','name','quantity')->where('id', $id);
+            $equipments = Equipment::all('id', 'name', 'quantity')->where('id', $id);
 
         if (!$equipments)
             return response()->json([
@@ -45,11 +56,11 @@ class EquipmentController extends Controller
                 "status" => 404
             ]);
         else
-        return response()->json([
-            "message" => "200",
-            "data" => $equipments
-        ]);
+            return response()->json([
+                "data" => $equipments
+            ]);
     }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -85,19 +96,20 @@ class EquipmentController extends Controller
      */
     public function viewOrUpdate(Request $request, $id)
     {
-        if ($request->getMethod() == "POST") {
+        if ($request->getMethod() === "POST") {
             return response()->json([
                 "message" => "Method not allowed",
-                "status" => 500
             ]);
         }
+
         $equipment = Equipment::find($id);
+
         if (!$equipment)
             return response()->json([
                 "message" => "Not found",
                 "status" => 404
             ]);
-        if ($request->getMethod() == "GET") {
+        if ($request->getMethod() === "GET") {
             return response()->json([
                 "data" => $equipment,
             ]);
@@ -125,27 +137,20 @@ class EquipmentController extends Controller
         if ($request->getMethod() != "DELETE") {
             return response()->json([
                 "message" => "Method not allowed",
-                "status" => 500
             ]);
         }
 
-        try {
-            $equipment = Equipment::findOrFail($id);
+        $equipment = Equipment::find($id);
 
-            $equipment->delete();
-
+        if (!$equipment)
             return response()->json([
-                "message" => "Deleted successfully",
-                "status" => 203
-            ]);
-
-        } catch (NotFound $exception) {
-            return response()->json([
-                "message" => $exception,
+                "message" => "Not found",
                 "status" => 404
             ]);
-        };
+        $equipment->delete();
+
+        return response()->json([
+            "message" => "Deleted successfully",
+        ]);
     }
-
-
 }
