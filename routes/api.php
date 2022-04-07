@@ -23,12 +23,15 @@ Route::group(['middleware'=>'api'],function($router){
     Route::post('/logout', [\App\Http\Controllers\AuthController::class,'logout']);
 
     Route::get('/equipments', [\App\Http\Controllers\EquipmentController::class, 'index']);
+    Route::get('/equipments?quantity={quantity}', [\App\Http\Controllers\EquipmentController::class, 'index']);
+    Route::get('equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'index']);
+
     Route::post('/equipments', [\App\Http\Controllers\EquipmentController::class, 'create']);
-    Route::get('equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'viewOrUpdate']);
     Route::put('equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'viewOrUpdate']);
     Route::delete('equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'destroy']);
 
     Route::get('/find-equipments/{id}', [\App\Http\Controllers\EquipmentController::class, 'guestView']);
+    Route::get('/find-equipments?quantity={quantity}', [\App\Http\Controllers\EquipmentController::class, 'guestView']);
     Route::get('/find-equipments/', [\App\Http\Controllers\EquipmentController::class, 'guestView']);
 
 });

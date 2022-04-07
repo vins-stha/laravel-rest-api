@@ -27,9 +27,17 @@ class EquipmentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      */
-    public function index(Request $request)
+    public function index(Request $request, $id=null)
     {
-        $equipments = Equipment::all();
+        if ($request->quantity) {
+            $equipments = Equipment::all()->where('quantity', intval($request->quantity));
+
+        } elseif (!$id && !$request->quantity) {
+            $equipments = Equipment::all();
+
+        } else {
+            $equipments = Equipment::find($id);
+        }
 
         return response()->json([
             "message" => "200",
@@ -45,20 +53,16 @@ class EquipmentController extends Controller
      */
     public function guestView(Request $request, $id = null)
     {
-        if (!$id)
+        if ($request->quantity)
+            $equipments = Equipment::all('id', 'name', 'quantity')->where('quantity', intval($request->quantity));
+        elseif (!$id && !$request->quantity)
             $equipments = Equipment::all('id', 'name', 'quantity');
         else
             $equipments = Equipment::all('id', 'name', 'quantity')->where('id', $id);
 
-        if (!$equipments)
-            return response()->json([
-                "message" => "Not found",
-                "status" => 404
-            ]);
-        else
-            return response()->json([
-                "data" => $equipments
-            ]);
+        return response()->json([
+            "data" => $equipments
+        ]);
     }
 
     /**
@@ -96,12 +100,6 @@ class EquipmentController extends Controller
      */
     public function viewOrUpdate(Request $request, $id)
     {
-        if ($request->getMethod() === "POST") {
-            return response()->json([
-                "message" => "Method not allowed",
-            ]);
-        }
-
         $equipment = Equipment::find($id);
 
         if (!$equipment)
@@ -109,11 +107,7 @@ class EquipmentController extends Controller
                 "message" => "Not found",
                 "status" => 404
             ]);
-        if ($request->getMethod() === "GET") {
-            return response()->json([
-                "data" => $equipment,
-            ]);
-        }
+
         $inputs = json_decode($request->getContent());
         foreach ($inputs as $key => $value) {
 
