@@ -43,11 +43,7 @@ class EquipmentTest extends TestCase
 
         $headers = ['Authorization' => "Bearer $token"];
 
-        $equipment = Equipment::factory()->create([
-            "name" => "Lorem",
-            "quantity" => 10,
-            "internal_notes" => "Ipsum"
-        ]);
+        $equipment = Equipment::factory()->create();
 
         $response = $this->json(
             'GET',
@@ -56,11 +52,12 @@ class EquipmentTest extends TestCase
         )
             ->assertStatus(200)
             ->assertJson([
-                'data' => [
-                    'id' => 1,
-                    'name' => 'Lorem',
-                    'quantity' => 10,
-                    'internal_notes' => 'Ipsum'
+                'message' => "200",
+                'equipments' => [
+                    'id' => $equipment->id,
+                    'name' =>$equipment->name,
+                    'quantity' => $equipment->quantity,
+                    'internal_notes' => $equipment->internal_notes
                 ],
             ]);
     }
@@ -135,11 +132,7 @@ class EquipmentTest extends TestCase
 
     public function test_successful_retrieve_by_guest()
     {
-        $equipment = Equipment::factory()->create([
-            "name" => "Lorem",
-            "quantity" => 10,
-            "internal_notes" => "Ipsum"
-        ]);
+        $equipment = Equipment::factory()->create();
 
         $response = $this->json(
             'GET',
@@ -148,13 +141,13 @@ class EquipmentTest extends TestCase
         )
             ->assertStatus(200)
             ->assertJson([
-                "data" => [
-                    "id" =>  $equipment->id,
-                    "name" => "Lorem",
-                    "quantity" => 10
-                ],
-            ]);
+                    "data" => [
+                        "id" => $equipment->id,
+                        "name" => $equipment->name,
+                        "quantity" => $equipment->quantity
+                    ]
+                ]
+            );
     }
-
 
 }

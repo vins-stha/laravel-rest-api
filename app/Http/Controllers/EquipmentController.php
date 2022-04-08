@@ -34,6 +34,7 @@ class EquipmentController extends Controller
 
         } elseif (!$id && !$request->quantity) {
             $equipments = Equipment::all();
+            var_dump(json_encode($equipments));
 
         } else {
             $equipments = Equipment::find($id);
@@ -60,9 +61,9 @@ class EquipmentController extends Controller
         else
             $equipments = Equipment::all('id', 'name', 'quantity')->where('id', $id);
 
-        return response()->json([
-            "data" => $equipments
-        ]);
+        return response()->json(
+            ["data"=> $id ? $equipments[0] : $equipments]
+    );
     }
 
     /**
